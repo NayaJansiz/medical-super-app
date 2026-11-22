@@ -7,9 +7,17 @@ SCHEMA.md and CURRENT_PHASE.md when provided.
 
 Stack: Python 3.12, FastAPI, Pydantic v2, SQLAlchemy 2 + Alembic,
 PostgreSQL + pgvector, React + Vite + TypeScript + Tailwind.
-Tools: uv, Ruff, mypy, pytest + httpx, Playwright.
-Layout: /backend (app/, tests/), /frontend, /docs.
-Commands: `uv run pytest`, `uv run ruff check .`, `uv run mypy app`.
+Tools: uv (Python), pnpm (frontend), Ruff, mypy, pytest + httpx, Playwright.
+Layout: pyproject.toml and uv.lock at the repo root; /backend (app/, tests/,
+alembic/, alembic.ini), /frontend (pnpm), /docs.
+Run everything from the repo root:
+- Tests: `uv run pytest`
+- Lint: `uv run ruff check .` and `uv run ruff format --check .`
+- Types: `uv run mypy backend/app`
+- API: `uv run uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port 8000`
+- API + frontend: `pnpm --dir frontend dev` (Vite on port 5000, proxies /health)
+- Migrations: `uv run alembic -c backend/alembic.ini upgrade head`
+- New migration: `uv run alembic -c backend/alembic.ini revision --autogenerate -m "message"`
 
 ## Rules for AI assistants
 1. Work on ONE task at a time. Do not change files I did not list.
@@ -24,7 +32,7 @@ Commands: `uv run pytest`, `uv run ruff check .`, `uv run mypy app`.
    Unverified data must be labeled "unverified" in the UI.
 9. Use the error format and naming from CONVENTIONS.md.
 10. Output: changed files in full, then 3 lines on how to test manually.
-11. Use type hints everywhere; code must pass ruff and mypy.
+11. Use type hints everywhere; code must pass ruff and mypy (mypy backend/app).
 12. Database changes only through Alembic migrations, never by hand.
 13. Never log patient data. Medical data access goes to the audit log.
 14. Synthetic data only. Never invent or request real patient data.
