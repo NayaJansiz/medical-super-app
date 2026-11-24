@@ -1,0 +1,54 @@
+{
+  "app": {
+    "name": "السجلات الطبية"
+  },
+  "common": {
+    "language": "اللغة",
+    "english": "English",
+    "arabic": "العربية",
+    "loading": "جارٍ التحميل..."
+  },
+  "fields": {
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "fullName": "الاسم الكامل",
+    "role": "أنا"
+  },
+  "roles": {
+    "patient": "مريض",
+    "student": "طالب"
+  },
+  "login": {
+    "title": "تسجيل الدخول",
+    "submit": "دخول",
+    "submitting": "جارٍ الدخول...",
+    "noAccount": "ما عندك حساب؟",
+    "registerLink": "أنشئ حساباً",
+    "accountCreated": "تم إنشاء الحساب. سجّل دخولك."
+  },
+  "register": {
+    "title": "إنشاء حساب",
+    "submit": "إنشاء الحساب",
+    "submitting": "جارٍ إنشاء الحساب...",
+    "haveAccount": "عندك حساب؟",
+    "loginLink": "تسجيل الدخول"
+  },
+  "home": {
+    "welcome": "أهلاً، {{name}}",
+    "emailLabel": "البريد الإلكتروني",
+    "roleLabel": "الدور",
+    "logout": "تسجيل الخروج"
+  },
+  "validation": {
+    "required": "هذا الحقل مطلوب.",
+    "invalidEmail": "أدخل بريداً إلكترونياً صحيحاً.",
+    "passwordTooShort": "كلمة المرور لازم تكون 8 أحرف على الأقل."
+  },
+  "errors": {
+    "EMAIL_IN_USE": "هذا البريد مستخدم من قبل.",
+    "INVALID_CREDENTIALS": "البريد أو كلمة المرور غلط.",
+    "RATE_LIMITED": "محاولات كثيرة. انتظر شوي وجرّب مرة ثانية.",
+    "NETWORK": "ما في اتصال بالسيرفر. تأكد من الإنترنت.",
+    "GENERIC": "صار خطأ. جرّب مرة ثانية."
+  }
+}
