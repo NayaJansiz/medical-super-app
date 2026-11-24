@@ -1,8 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "./auth/AuthContext";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 
 type HealthStatus = "checking" | "connected" | "unavailable";
 
-export default function App() {
+function StatusPage() {
   const [status, setStatus] = useState<HealthStatus>("checking");
 
   useEffect(() => {
@@ -66,5 +72,64 @@ export default function App() {
         </p>
       </section>
     </main>
+  );
+}
+
+function RequireAuth({ children }: { children: ReactNode }) {
+  const { user, loading } = useAuth();
+  const { t } = useTranslation();
+
+  if (loading) {
+    return <p className="p-6 text-sm text-slate-600">{t("loading")}</p>;
+  }
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  return <>{children}</>;
+}
+
+function RedirectIfLoggedIn({ children }: { children: ReactNode }) {
+  const { user, loading } = useAuth();
+  const { t } = useTranslation();
+
+  if (loading) {
+    return <p className="p-6 text-sm text-slate-600">{t("loading")}</p>;
+  }
+  if (user) {
+    return <Navigate to="/" replace />;
+  }
+  return <>{children}</>;
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <RequireAuth>
+            <HomePage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/login"
+        element={
+          <RedirectIfLoggedIn>
+            <LoginPage />
+          </RedirectIfLoggedIn>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <RedirectIfLoggedIn>
+            <RegisterPage />
+          </RedirectIfLoggedIn>
+        }
+      />
+      <Route path="/status" element={<StatusPage />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
