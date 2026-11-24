@@ -1,0 +1,54 @@
+{
+  "app": {
+    "name": "Medical Records"
+  },
+  "common": {
+    "language": "Language",
+    "english": "English",
+    "arabic": "العربية",
+    "loading": "Loading..."
+  },
+  "fields": {
+    "email": "Email",
+    "password": "Password",
+    "fullName": "Full name",
+    "role": "I am a"
+  },
+  "roles": {
+    "patient": "Patient",
+    "student": "Student"
+  },
+  "login": {
+    "title": "Log in",
+    "submit": "Log in",
+    "submitting": "Logging in...",
+    "noAccount": "Don't have an account?",
+    "registerLink": "Create one",
+    "accountCreated": "Account created. Please log in."
+  },
+  "register": {
+    "title": "Create account",
+    "submit": "Create account",
+    "submitting": "Creating account...",
+    "haveAccount": "Already have an account?",
+    "loginLink": "Log in"
+  },
+  "home": {
+    "welcome": "Welcome, {{name}}",
+    "emailLabel": "Email",
+    "roleLabel": "Role",
+    "logout": "Log out"
+  },
+  "validation": {
+    "required": "This field is required.",
+    "invalidEmail": "Enter a valid email address.",
+    "passwordTooShort": "Password must be at least 8 characters."
+  },
+  "errors": {
+    "EMAIL_IN_USE": "This email is already used.",
+    "INVALID_CREDENTIALS": "Wrong email or password.",
+    "RATE_LIMITED": "Too many attempts. Please wait and try again.",
+    "NETWORK": "Cannot reach the server. Check your connection.",
+    "GENERIC": "Something went wrong. Please try again."
+  }
+}
