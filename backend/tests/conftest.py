@@ -1,11 +1,13 @@
 from collections.abc import Callable, Iterator
 
 import pytest
+from argon2 import PasswordHasher
 from fastapi.testclient import TestClient
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 
+from app.core import security
 from app.core.security import hash_password
 from app.db import models  # noqa: F401
 from app.db.base import Base
@@ -16,6 +18,15 @@ from app.modules.auth.models import User
 PASSWORD = "correct-horse-battery"
 
 MakeUser = Callable[..., User]
+
+
+@pytest.fixture(autouse=True)
+def fast_password_hashing(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Tests use cheap argon2id settings. Production keeps the defaults."""
+    monkeypatch.setattr(
+        security, "_hasher", PasswordHasher(time_cost=1, memory_cost=8, parallelism=1)
+    )
+    security._dummy_hash.cache_clear()
 
 
 @pytest.fixture

@@ -16,6 +16,7 @@ from app.core.security import (
     verify_password,
 )
 from app.core.timeutil import as_utc, utcnow
+from app.modules.audit import service as audit
 from app.modules.auth.models import User, UserSession
 from app.modules.auth.roles import Role
 
@@ -120,6 +121,14 @@ def change_role(db: Session, *, actor: User, user_id: uuid.UUID, role: Role) -> 
     if user is None:
         raise AppError(404, "NOT_FOUND", "User not found.")
     user.role = role.value
+    audit.log(
+        db,
+        actor_id=actor.id,
+        action="user.role_change",
+        resource_type="user",
+        resource_id=user.id,
+        detail=f"role={role.value}",
+    )
     db.commit()
     db.refresh(user)
     return user
