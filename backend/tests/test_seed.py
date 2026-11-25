@@ -26,3 +26,19 @@ def test_seed_refuses_without_a_password(monkeypatch: pytest.MonkeyPatch) -> Non
     monkeypatch.delenv("SEED_PASSWORD", raising=False)
     with pytest.raises(SystemExit):
         seed.main()
+
+
+def test_seed_creates_demo_profile_and_consent_once(engine: Engine) -> None:
+    from sqlalchemy import func, select
+
+    from app.modules.records.models import Consent, PatientProfile
+    from app.scripts.seed import seed_records
+
+    with Session(engine) as session:
+        seed.seed_users(session, "a-long-demo-password")
+        assert seed_records(session) == 2
+        assert seed_records(session) == 0  # safe to run twice
+        profiles = session.scalar(select(func.count()).select_from(PatientProfile))
+        consents = session.scalar(select(func.count()).select_from(Consent))
+        assert (profiles, consents) == (1, 1)
+        assert session.scalars(select(PatientProfile)).one().is_synthetic is True
