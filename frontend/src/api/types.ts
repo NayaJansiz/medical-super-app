@@ -1,4 +1,13 @@
-export type Role = "patient" | "student";
+export type Role =
+  | "patient"
+  | "doctor"
+  | "clinic_admin"
+  | "pharmacist"
+  | "student"
+  | "lab_staff"
+  | "super_admin";
+
+export type RegisterRole = "patient" | "student";
 
 export interface User {
   id: string;
@@ -11,7 +20,7 @@ export interface RegisterBody {
   email: string;
   password: string;
   full_name: string;
-  role: Role;
+  role: RegisterRole;
 }
 
 export interface LoginBody {
