@@ -64,8 +64,13 @@ def authorize_access(
     profile = db.get(PatientProfile, patient_id)
     allowed = profile is not None and (
         profile.user_id == actor.id
-        or _has_active_consent(
-            db, patient_id=patient_id, grantee_id=actor.id, scope=scope
+        # A consent only counts while its holder is *currently* a doctor.
+        # If the role changes later, the consent stops working at once.
+        or (
+            actor.role == Role.DOCTOR.value
+            and _has_active_consent(
+                db, patient_id=patient_id, grantee_id=actor.id, scope=scope
+            )
         )
     )
     if profile is None or not allowed:
