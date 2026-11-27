@@ -16,7 +16,12 @@
   },
   "roles": {
     "patient": "Patient",
-    "student": "Student"
+    "doctor": "Doctor",
+    "clinic_admin": "Clinic admin",
+    "pharmacist": "Pharmacist",
+    "student": "Student",
+    "lab_staff": "Lab staff",
+    "super_admin": "System admin"
   },
   "login": {
     "title": "Log in",

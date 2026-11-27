@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 
 import * as api from "../api/client";
-import { ApiError, type Role } from "../api/types";
+import { ApiError, type RegisterRole } from "../api/types";
 import FormField from "../components/FormField";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 
@@ -22,7 +22,7 @@ export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<Role>("patient");
+  const [role, setRole] = useState<RegisterRole>("patient");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [serverError, setServerError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -129,7 +129,7 @@ export default function RegisterPage() {
             <select
               id="role"
               value={role}
-              onChange={(e) => setRole(e.target.value as Role)}
+              onChange={(e) => setRole(e.target.value as RegisterRole)}
               className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-base text-slate-950 outline-none focus:ring-2 focus:ring-emerald-500"
             >
               <option value="patient">{t("roles.patient")}</option>
