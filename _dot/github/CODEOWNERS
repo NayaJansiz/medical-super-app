@@ -1,0 +1,11 @@
+# Security-sensitive paths: GitHub requests review from the other engineer.
+# Everything else self-merges on green CI (see TEAM.md).
+/backend/app/modules/auth/      @NayaJansiz @nadeembrijawy
+/backend/app/modules/audit/     @NayaJansiz @nadeembrijawy
+/backend/app/modules/records/   @NayaJansiz @nadeembrijawy
+/backend/app/core/security.py   @NayaJansiz @nadeembrijawy
+/backend/app/core/errors.py     @NayaJansiz @nadeembrijawy
+/backend/app/ai/                @NayaJansiz @nadeembrijawy
+/backend/alembic/versions/      @NayaJansiz @nadeembrijawy
+/SAFETY_RULES.md                @NayaJansiz @nadeembrijawy
+/.github/                       @NayaJansiz @nadeembrijawy
