@@ -1,28 +1,35 @@
-# Current phase: Day 3 Consent and audit log
+# Current phase
 
-Goal: a patient controls who can see their record, and every access is logged.
-Focus (one thing): consent + audit log on top of the Day 2 auth and roles.
+The plan lives in PLAN.md. This file holds only today's task cards.
 
-## Tasks
-- [x] Day 1 foundation (scaffold, CI, AI Gateway mock)
-- [x] Day 2 auth backend (users, sessions, roles) and login/register screens
-- [ ] Day 2 auth PR merged to main (backend) and frontend wired to the real API
-- [ ] Day 3 PR: patient profile, consents, audit log, matrix tests
-- [ ] Day 3 reviewed by the other person plus a fresh AI chat (Security review prompt)
+## Fri 27 Nov: appointments and patient screens
 
-## Exit gate
-A patient grants a doctor access, the doctor reads the profile, the patient
-revokes, the doctor gets 404, and the patient sees all of it in their log.
+### Naya: appointments backend
+- Goal: a patient books a doctor's slot, the state moves through
+  requested, confirmed, completed, cancelled, and two people cannot book the
+  same slot.
+- Acceptance criteria:
+  1. Doctor profile and availability slots (create and list).
+  2. Booking state machine with only legal transitions.
+  3. Double booking prevented (test with two simultaneous bookings).
+  4. Jitsi link attached to a confirmed appointment.
+  5. Authorization matrix: each role against each endpoint; patients see
+     only their own appointments; every read and write is audited.
+- Out of scope: chat, reminders, payments.
+- Test: `make check`; try booking the same slot twice.
 
-## Status
-(update daily; 5-line log: done, blocked, next, learned, risks)
-- done: auth backend branch pushed; consent + audit built and tested on a copy
-- blocked: nothing; Day 3 branches from main after the auth merge
-- next: merge auth, merge Day 3, frontend wires /api, Day 4 appointments
-- learned: denials must be audited too, not only successful reads
-- risks: no login rate limiting yet (Day 10); no break-glass access (post-demo)
+### Nadeem: patient screens
+- Goal: a patient manages their own profile, consents and access log from the UI.
+- Acceptance criteria:
+  1. Profile page (view and edit) using `/api/v1/patients/me/profile`.
+  2. Consents page: grant to a doctor by email with scope and expiry, list,
+     revoke (`/api/v1/consents`, `/consents/{id}/revoke`).
+  3. Access log page using `/api/v1/audit-logs/me`.
+  4. English and Arabic (RTL), works at 360px width, clear error messages.
+- Out of scope: doctor screens.
+- Test: `pnpm --dir frontend build`; click through as `patient@demo.example`.
 
-## 10-day roadmap (one focus per day)
-1 Foundation | 2 Auth and roles | 3 Consent and audit log |
-4 Appointments | 5 Clinic and invoices | 6 Pharmacy | 7 Lab |
-8 AI layer | 9 Education | 10 Hardening and demo
+### Both
+- Merge the workflow upgrade PR; run `make status` to see the plan.
+- Both can run the project outside Replit (docs/DEV_ENVIRONMENT.md).
+- AI provider feasibility test, VPN off first; record in DECISIONS.md.

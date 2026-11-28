@@ -1,0 +1,102 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # Required checks (keep these two names: the branch ruleset uses them).
+  backend:
+    runs-on: ubuntu-latest
+    env:
+      SESSION_SECRET: ci-only-secret
+      AI_PROVIDER: mock
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - run: uv sync --frozen
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy backend/app
+      - run: uv run pytest -q
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --dir frontend build
+
+  # Not required yet. Unit tests run on SQLite, so this proves the migrations
+  # work on real Postgres: up, matches the models, down, up again.
+  migrations:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - run: uv sync --frozen
+      - name: Upgrade to head
+        run: uv run alembic -c backend/alembic.ini upgrade head
+      - name: Migrations match the models
+        run: uv run alembic -c backend/alembic.ini check
+      - name: Downgrade to base
+        run: uv run alembic -c backend/alembic.ini downgrade base
+      - name: Upgrade again
+        run: uv run alembic -c backend/alembic.ini upgrade head
+
+  # Informational: known vulnerabilities in production dependencies.
+  audit:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Python dependencies
+        run: |
+          uv export --frozen --no-hashes --no-dev -o /tmp/req.txt
+          uvx pip-audit -r /tmp/req.txt
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Frontend dependencies
+        run: pnpm audit --prod
+
+  # Shows plan progress on the Actions run page.
+  plan-status:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/status.py --summary >> "$GITHUB_STEP_SUMMARY"
